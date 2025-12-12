@@ -81,7 +81,7 @@ export default function HeroSection() {
         {/* Kalp Şeklinde Fotoğraf Çerçevesi */}
         <div
           ref={heartRef}
-          className="relative mx-auto mb-12 w-72 h-72 md:w-96 md:h-96"
+          className="relative mx-auto mb-12 w-72 h-72 md:w-[500px] mt-10 md:h-[500px]"
         >
           {/* SVG Kalp Mask */}
           <svg className="absolute w-0 h-0">
@@ -105,14 +105,14 @@ export default function HeroSection() {
           >
             {/* Placeholder fotoğraf - sonra değiştirilecek */}
             <Image
-              src="/images/couple-photo.jpg"
+              src="/images/yıl-donumu.jpeg"
               alt="Bizim fotoğrafımız"
               fill
               className="object-cover"
               priority
             />
             {/* Fallback gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-romantic-400 to-romantic-600 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-romantic-200  flex items-center justify-center">
               <span className="text-white/80 text-6xl">💚</span>
             </div>
           </div>

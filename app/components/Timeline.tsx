@@ -1,18 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, Baby, Heart, Infinity, Sparkles, BookHeart } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface TimelineEvent {
   date: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: any;
   iconColor: string;
 }
 
@@ -37,9 +32,9 @@ const timelineEvents: TimelineEvent[] = [
     date: "17 Mayıs 2024",
     title: "Hikayemizin Başlangıcı",
     description:
-      "O gün hayatım değişti. Seninle tanıştığım an, kalbim ilk kez gerçek aşkı hissetti. O günden beri her gün sana biraz daha aşık oluyorum.",
+      "O gün hayatım değişti. Seninle tanıştığım an, hayatımı seninle geçirmek istediğimi anladım. O günden beri her gün sana biraz daha aşık oluyorum.",
     icon: Heart,
-    iconColor: "text-romantic-500 fill-romantic-500",
+    iconColor: "text-green-600 fill-green-600",
   },
   {
     date: "Bugün ve Sonsuza Dek",
@@ -47,156 +42,92 @@ const timelineEvents: TimelineEvent[] = [
     description:
       "Her güne seninle başlamak, her geceyi seninle sonlandırmak... Hayatımın en güzel hediyesi sensin. Sonsuza dek seninle...",
     icon: Infinity,
-    iconColor: "text-romantic-600",
+    iconColor: "text-teal-600",
   },
 ];
 
 export default function Timeline() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Başlık animasyonu
-      gsap.fromTo(
-        ".timeline-title",
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // Timeline çizgisi animasyonu
-      gsap.fromTo(
-        ".timeline-line-fill",
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          duration: 2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: "top 70%",
-            end: "bottom 30%",
-            scrub: 1,
-          },
-        }
-      );
-
-      // Timeline kartları animasyonu
-      const cards = document.querySelectorAll(".timeline-card");
-      cards.forEach((card, index) => {
-        gsap.fromTo(
-          card,
-          {
-            opacity: 0,
-            x: index % 2 === 0 ? -100 : 100,
-          },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
           }
-        );
-      });
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-      // Timeline noktaları animasyonu
-      const dots = document.querySelectorAll(".timeline-dot");
-      dots.forEach((dot) => {
-        gsap.fromTo(
-          dot,
-          { scale: 0 },
-          {
-            scale: 1,
-            duration: 0.5,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: dot,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      });
-    }, sectionRef);
+    const elements = sectionRef.current?.querySelectorAll('.animate-on-scroll');
+    elements?.forEach((el) => observer.observe(el));
 
-    return () => ctx.revert();
+    return () => observer.disconnect();
   }, []);
 
   return (
     <section
       ref={sectionRef}
       id="hikayemiz"
-      className="section-padding bg-gradient-to-b from-romantic-300 via-romantic-200 to-romantic-100 relative overflow-hidden"
+      className="relative py-16 md:py-24 lg:py-32 bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 overflow-hidden"
     >
       {/* Dekoratif arka plan */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <Heart className="absolute top-20 left-10 w-24 h-24 text-romantic-500" />
-        <Heart className="absolute bottom-20 right-10 w-24 h-24 text-romantic-500" />
-        <Sparkles className="absolute top-40 right-20 w-16 h-16 text-romantic-400" />
-        <BookHeart className="absolute bottom-40 left-20 w-16 h-16 text-romantic-400" />
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <Heart className="absolute top-20 left-5 md:left-10 w-16 md:w-24 h-16 md:h-24 text-green-500 animate-pulse" />
+        <Heart className="absolute bottom-20 right-5 md:right-10 w-16 md:w-24 h-16 md:h-24 text-emerald-500 animate-pulse delay-1000" />
+        <Sparkles className="absolute top-40 right-10 md:right-20 w-12 md:w-16 h-12 md:h-16 text-teal-400 animate-bounce" />
+        <BookHeart className="absolute bottom-40 left-10 md:left-20 w-12 md:w-16 h-12 md:h-16 text-green-400 animate-bounce delay-500" />
       </div>
 
-      <div className="container-romantic relative z-10">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
         {/* Başlık */}
-        <div className="text-center mb-20">
-          <h2 className="timeline-title text-4xl md:text-5xl lg:text-6xl font-elegant font-bold text-romantic-800 mb-6">
+        <div className="text-center mb-12 md:mb-16 lg:mb-20 animate-on-scroll opacity-0">
+          <h2 className="text-3xl md:text-4xl lg:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 mb-4 md:mb-6">
             Hikayemiz
           </h2>
-          <p className="timeline-title text-lg md:text-xl text-romantic-700 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg lg:text-xl text-gray-700 max-w-2xl mx-auto px-4">
             Her büyük aşkın bir başlangıcı vardır...
             <br />
             İşte bizim hikayemiz.
           </p>
         </div>
 
-        {/* Timeline */}
-        <div ref={timelineRef} className="relative max-w-4xl mx-auto">
+        {/* Timeline - Desktop */}
+        <div className="hidden md:block relative max-w-5xl mx-auto">
           {/* Merkez çizgi */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-romantic-300 rounded-full">
-            <div className="timeline-line-fill absolute top-0 left-0 w-full h-full bg-gradient-to-b from-romantic-500 to-romantic-700 rounded-full origin-top" />
-          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-green-300 via-emerald-300 to-teal-300 rounded-full" />
 
           {/* Timeline kartları */}
-          <div className="space-y-16">
+          <div className="space-y-16 lg:space-y-24">
             {timelineEvents.map((event, index) => (
               <div
                 key={index}
-                className={`timeline-card relative flex items-center ${
+                className={`animate-on-scroll opacity-0 relative flex items-center ${
                   index % 2 === 0 ? "flex-row" : "flex-row-reverse"
                 }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Kart */}
                 <div
                   className={`w-5/12 ${
-                    index % 2 === 0 ? "pr-8 text-right" : "pl-8 text-left"
+                    index % 2 === 0 ? "pr-8 lg:pr-12 text-right" : "pl-8 lg:pl-12 text-left"
                   }`}
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-romantic-200">
-                    <div className="mb-4 flex justify-center">
-                      <event.icon className={`w-10 h-10 ${event.iconColor}`} />
+                  <div className="bg-white/90 backdrop-blur-sm rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-green-200/50 hover:scale-105 hover:border-green-300">
+                    <div className={`mb-4 flex ${index % 2 === 0 ? 'justify-end' : 'justify-start'}`}>
+                      <div className="bg-gradient-to-br from-green-100 to-teal-100 p-3 lg:p-4 rounded-full">
+                        <event.icon className={`w-8 h-8 lg:w-10 lg:h-10 ${event.iconColor}`} />
+                      </div>
                     </div>
-                    <span className="text-romantic-500 font-semibold text-sm uppercase tracking-wider">
+                    <span className="text-green-600 font-semibold text-xs lg:text-sm uppercase tracking-wider">
                       {event.date}
                     </span>
-                    <h3 className="text-xl md:text-2xl font-elegant font-bold text-romantic-800 mt-2 mb-3">
+                    <h3 className="text-xl lg:text-2xl font-serif font-bold text-gray-800 mt-2 mb-3">
                       {event.title}
                     </h3>
-                    <p className="text-romantic-700 leading-relaxed">
+                    <p className="text-gray-700 leading-relaxed text-sm lg:text-base">
                       {event.description}
                     </p>
                   </div>
@@ -204,7 +135,10 @@ export default function Timeline() {
 
                 {/* Merkez nokta */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="timeline-dot w-6 h-6 bg-romantic-500 rounded-full border-4 border-white shadow-lg" />
+                  <div className="relative">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full border-4 border-white shadow-lg" />
+                    <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-50" />
+                  </div>
                 </div>
 
                 {/* Boş alan */}
@@ -213,7 +147,78 @@ export default function Timeline() {
             ))}
           </div>
         </div>
+
+        {/* Timeline - Mobile */}
+        <div className="md:hidden relative max-w-xl mx-auto">
+          {/* Sol çizgi */}
+          <div className="absolute left-6 top-0 w-0.5 h-full bg-gradient-to-b from-green-300 via-emerald-300 to-teal-300 rounded-full" />
+
+          {/* Timeline kartları */}
+          <div className="space-y-8">
+            {timelineEvents.map((event, index) => (
+              <div
+                key={index}
+                className="animate-on-scroll opacity-0 relative flex gap-4"
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                {/* Nokta */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                    <event.icon className={`w-6 h-6 ${event.iconColor}`} />
+                  </div>
+                  <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-30" />
+                </div>
+
+                {/* Kart */}
+                <div className="flex-1 pb-8">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-green-200/50">
+                    <span className="text-green-600 font-semibold text-xs uppercase tracking-wider">
+                      {event.date}
+                    </span>
+                    <h3 className="text-lg font-serif font-bold text-gray-800 mt-2 mb-2">
+                      {event.title}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed text-sm">
+                      {event.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <style jsx>{`
+        .animate-on-scroll {
+          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+          transform: translateY(30px);
+        }
+
+        .animate-on-scroll.animate-in {
+          opacity: 1 !important;
+          transform: translateY(0);
+        }
+
+        .delay-500 {
+          animation-delay: 0.5s;
+        }
+
+        .delay-1000 {
+          animation-delay: 1s;
+        }
+
+        @keyframes ping {
+          75%, 100% {
+            transform: scale(2);
+            opacity: 0;
+          }
+        }
+
+        .animate-ping {
+          animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+      `}</style>
     </section>
   );
 }

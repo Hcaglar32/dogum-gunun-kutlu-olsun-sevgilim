@@ -17,7 +17,7 @@ const loveMessages = [
   "Seninle sonsuza dek...",
 ];
 
-const HEART_IMAGE_URL = "/images/romantik-an.jpeg";
+const HEART_IMAGE_URL = "/images/romantiak-an.jpeg";
 
 interface FloatingHeartData {
   id: number;
